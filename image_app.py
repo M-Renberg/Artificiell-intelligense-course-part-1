@@ -36,3 +36,5 @@ if uploaded_file is not None:
         prediction = model.predict(img_vector)
         
         st.success(f"Modellen gissar att siffran är: {prediction[0]}")
+        
+#Run by using "streamlit run image_app.py" in the console
