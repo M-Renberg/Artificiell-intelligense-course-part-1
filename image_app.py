@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 from skimage.transform import resize
 import joblib
 
@@ -21,7 +21,8 @@ if uploaded_file is not None:
     st.write("Processar bild...")
 
     img_gray = image.convert('L')
-    img_resized = img_gray.resize((28, 28), Image.Resampling.LANCZOS)
+    img_inverted = ImageOps.invert(img_gray)
+    img_resized = img_inverted.resize((28, 28), Image.Resampling.LANCZOS)
     
     img_array = np.array(img_resized)
     
