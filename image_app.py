@@ -1,13 +1,13 @@
 import streamlit as st
 import numpy as np
 from PIL import Image, ImageOps
-from skimage.transform import resize
 import joblib
 
 @st.cache_resource
-def load_model():
-    model = joblib.load('mnistmodelone.joblib')
-    return model
+def load_model_and_scaler():
+    model = joblib.load('mnistmodelone.pkl')
+    scaler = joblib.load('mnist_scaler.pkl')
+    return model, scaler
 
 st.title("Siffer scanner 3000")
 st.write("Har du en siffra skriven med dålig handstil? Låt våran model försöka tyda den")
@@ -25,16 +25,16 @@ if uploaded_file is not None:
     img_resized = img_inverted.resize((28, 28), Image.Resampling.LANCZOS)
     
     img_array = np.array(img_resized)
-    
     img_vector = img_array.flatten().reshape(1, -1)
     
     st.image(img_resized, caption="Förprocessad bild (28x28)", width=100)
 
     if st.button("Prediktera siffra"):
-        model = load_model()
+        model, scaler = load_model_and_scaler()
         
-        prediction = model.predict(img_vector)
+        img_vector_scaled = scaler.transform(img_vector) 
+        
+        prediction = model.predict(img_vector_scaled) 
         
         st.success(f"Modellen gissar att siffran är: {prediction[0]}")
-        
 #Run by using "streamlit run image_app.py" in the console
